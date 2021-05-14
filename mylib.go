@@ -6,7 +6,7 @@ import (
 	"github.com/shirou/gopsutil/v3/mem"
 )
 
-func Mem() uint64 {
+func Mem() []byte {
 	v, _ := mem.VirtualMemory()
 
 	// almost every return value is a struct
@@ -15,5 +15,5 @@ func Mem() uint64 {
 	// convert to JSON. String() is also implemented
 	fmt.Println(v)
 
-	return v.Total
+	return []byte(v.String())
 }
