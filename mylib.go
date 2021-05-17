@@ -9,6 +9,16 @@ import (
 	"github.com/shirou/gopsutil/v3/mem"
 )
 
+/*
+type DiskInfo struct {
+	name        string  `json:"name"`
+	total       uint64  `json:"total"`
+	free        uint64  `json:"free"`
+	used        uint64  `json:"used"`
+	usedPercent float64 `json:"usedPercent"`
+}
+*/
+
 func Host() []byte {
 	v, _ := host.Info()
 
@@ -31,14 +41,26 @@ func Mem() []byte {
 }
 
 func Disk() []byte {
-	v, _ := disk.Partitions(true)
+	p, _ := disk.Partitions(true)
 
 	// convert to JSON. String() is also implemented
-	fmt.Println(v)
+	//fmt.Println(p)
 
-	d, _ := json.Marshal(v)
-	//for i := 0; i < len(v); i++ {
-	//	d[i] = []byte(v[i].String())
-	//}
-	return d
+	var disks []map[string]interface{}
+	for _, v := range p {
+		//b, _ := json.Marshal(v)
+		d, _ := disk.Usage(v.Mountpoint)
+		di := map[string]interface{}{
+			"name":        d.Path,
+			"total":       d.Total,
+			"free":        d.Free,
+			"used":        d.Used,
+			"usedPercent": d.UsedPercent,
+		}
+		disks = append(disks, di)
+	}
+
+	j, _ := json.Marshal(disks)
+	//fmt.Println(string(j))
+	return j
 }
