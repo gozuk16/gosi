@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/host"
@@ -56,14 +57,15 @@ func Disk() []byte {
 		total := bytesize.New(float64(d.Total))
 		free := bytesize.New(float64(d.Free))
 		used := bytesize.New(float64(d.Used))
-		usedPercent := math.Round(d.UsedPercent*100) / 100
+		bytesize.Format = "%.1f "
+		usedPercent := math.Round(d.UsedPercent*10) / 10
 		//fmt.Printf("%v %v %v", total, free, used)
 		di := map[string]interface{}{
 			"name":        d.Path,
 			"total":       total.String(),
 			"free":        free.String(),
 			"used":        used.String(),
-			"usedPercent": usedPercent,
+			"usedPercent": strconv.FormatFloat(usedPercent, 'f', -1, 64) + "%",
 		}
 		disks = append(disks, di)
 	}
