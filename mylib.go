@@ -3,10 +3,13 @@ package mylib
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 
 	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/mem"
+
+	"github.com/inhies/go-bytesize"
 )
 
 /*
@@ -50,12 +53,17 @@ func Disk() []byte {
 	for _, v := range p {
 		//b, _ := json.Marshal(v)
 		d, _ := disk.Usage(v.Mountpoint)
+		total := bytesize.New(float64(d.Total))
+		free := bytesize.New(float64(d.Free))
+		used := bytesize.New(float64(d.Used))
+		usedPercent := math.Round(d.UsedPercent*100) / 100
+		//fmt.Printf("%v %v %v", total, free, used)
 		di := map[string]interface{}{
 			"name":        d.Path,
-			"total":       d.Total,
-			"free":        d.Free,
-			"used":        d.Used,
-			"usedPercent": d.UsedPercent,
+			"total":       total.String(),
+			"free":        free.String(),
+			"used":        used.String(),
+			"usedPercent": usedPercent,
 		}
 		disks = append(disks, di)
 	}
