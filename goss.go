@@ -16,16 +16,6 @@ import (
 	"github.com/inhies/go-bytesize"
 )
 
-/*
-type DiskInfo struct {
-	name        string  `json:"name"`
-	total       uint64  `json:"total"`
-	free        uint64  `json:"free"`
-	used        uint64  `json:"used"`
-	usedPercent float64 `json:"usedPercent"`
-}
-*/
-
 func Host() []byte {
 	v, _ := host.Info()
 
