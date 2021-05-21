@@ -1,4 +1,4 @@
-package mylib
+package goss
 
 import (
 	"encoding/json"

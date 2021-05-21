@@ -1,4 +1,4 @@
-module github.com/gozuk16/mylib
+module github.com/gozuk16/goss
 
 go 1.16
 
