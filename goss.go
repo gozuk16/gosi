@@ -12,17 +12,40 @@ import (
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v3/net"
 
 	"github.com/inhies/go-bytesize"
 )
 
-func Host() []byte {
-	v, _ := host.Info()
+const timeformat = "2006/01/02 15:04:05"
+
+func Info() []byte {
+	i, _ := host.Info()
 
 	// convert to JSON. String() is also implemented
-	fmt.Println(v)
+	fmt.Println(i)
 
-	return []byte(v.String())
+	n, _ := net.Interfaces()
+	fmt.Println(n)
+
+	t, _ := host.SensorsTemperatures()
+	fmt.Println(t)
+
+	var info map[string]interface{}
+	info = map[string]interface{}{
+		"hostname":        i.Hostname,
+		"uptime":          strconv.FormatUint(i.Uptime, 10),
+		"bootTime":        strconv.FormatUint(i.BootTime, 10),
+		"os":              i.OS,
+		"platform":        i.Platform,
+		"platformFamily":  i.PlatformFamily,
+		"platformVersion": i.PlatformVersion,
+		"kernelArch":      i.KernelArch,
+		"serverTime":      time.Now().Format(timeformat),
+	}
+	j, _ := json.Marshal(info)
+
+	return j
 }
 
 func Cpu() []byte {
