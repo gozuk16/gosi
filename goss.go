@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"net"
 	"strconv"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
-	"github.com/shirou/gopsutil/v3/net"
+	psnet "github.com/shirou/gopsutil/v3/net"
 
 	"github.com/inhies/go-bytesize"
 )
@@ -23,25 +24,49 @@ func Info() []byte {
 	i, _ := host.Info()
 
 	// convert to JSON. String() is also implemented
-	fmt.Println(i)
+	//fmt.Println(i)
 
-	n, _ := net.Interfaces()
-	fmt.Println(n)
+	n, _ := psnet.Interfaces()
+	//fmt.Println(n)
+	for _, v := range n {
+		if len(v.Addrs) > 0 {
+			for _, a := range v.Addrs {
+				_, ipnet, err := net.ParseCIDR(a.Addr)
+				if err != nil {
+					fmt.Println(err.Error)
+				}
+				fmt.Print(ipnet.IP.String())
+				fmt.Println(ipnet.IP.IsGlobalUnicast())
+			}
+			//fmt.Println(v.Addrs)
+		}
+	}
 
 	t, _ := host.SensorsTemperatures()
-	fmt.Println(t)
+	//fmt.Println(t)
+	var cpu_temp string
+	for _, v2 := range t {
+		//if v2.Temperature > 0 {
+		//	fmt.Println(v2.SensorKey + ": " + strconv.FormatFloat(v2.Temperature, 'f', -1, 64))
+		//}
+		if v2.SensorKey == "TC0P" {
+			cpu_temp = strconv.FormatFloat(v2.Temperature, 'f', -1, 64) + "℃"
+			break
+		}
+	}
 
 	var info map[string]interface{}
 	info = map[string]interface{}{
 		"hostname":        i.Hostname,
-		"uptime":          strconv.FormatUint(i.Uptime, 10),
-		"bootTime":        strconv.FormatUint(i.BootTime, 10),
 		"os":              i.OS,
 		"platform":        i.Platform,
 		"platformFamily":  i.PlatformFamily,
 		"platformVersion": i.PlatformVersion,
 		"kernelArch":      i.KernelArch,
+		"uptime":          strconv.FormatUint(i.Uptime, 10),
+		"bootTime":        strconv.FormatUint(i.BootTime, 10),
 		"serverTime":      time.Now().Format(timeformat),
+		"cpuTemperature":  cpu_temp,
 	}
 	j, _ := json.Marshal(info)
 
