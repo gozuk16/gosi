@@ -79,10 +79,10 @@ func Cpu() []byte {
 	//fmt.Printf("%f%%\n", c)
 
 	var cpu map[string]interface{}
-	total := strconv.FormatFloat(c[0], 'f', 0, 64) + "%"
-	var p = []string{}
+	total := uint(c[0])
+	var p = []uint{}
 	for _, v := range core {
-		p = append(p, strconv.FormatFloat(v, 'f', 0, 64)+"%")
+		p = append(p, uint(v))
 	}
 	cpu = map[string]interface{}{
 		"total":  total,
@@ -128,7 +128,7 @@ func Mem() []byte {
 		"total":       total.String(),
 		"available":   available.String(),
 		"used":        used.String(),
-		"usedPercent": strconv.FormatFloat(usedPercent, 'f', -1, 64) + "%",
+		"usedPercent": uint(usedPercent),
 	}
 	j, _ := json.Marshal(mem)
 	return j
