@@ -155,7 +155,7 @@ func Disk() []byte {
 			"total":       total.String(),
 			"free":        free.String(),
 			"used":        used.String(),
-			"usedPercent": strconv.FormatFloat(usedPercent, 'f', -1, 64) + "%",
+			"usedPercent": uint(usedPercent),
 		}
 		disks = append(disks, di)
 	}
