@@ -35,8 +35,10 @@ func Info() []byte {
 				if err != nil {
 					fmt.Println(err.Error)
 				}
-				fmt.Print(ipnet.IP.String())
-				fmt.Println(ipnet.IP.IsGlobalUnicast())
+				if ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() {
+					fmt.Print(ipnet.IP.String())
+					fmt.Println(ipnet.IP.IsGlobalUnicast())
+				}
 			}
 			//fmt.Println(v.Addrs)
 		}
