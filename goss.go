@@ -31,13 +31,12 @@ func Info() []byte {
 	for _, v := range n {
 		if len(v.Addrs) > 0 {
 			for _, a := range v.Addrs {
-				_, ipnet, err := net.ParseCIDR(a.Addr)
+				ipaddr, ipnet, err := net.ParseCIDR(a.Addr)
 				if err != nil {
 					fmt.Println(err.Error)
 				}
 				if ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() {
-					fmt.Print(ipnet.IP.String())
-					fmt.Println(ipnet.IP.IsGlobalUnicast())
+					fmt.Println(ipaddr.String())
 				}
 			}
 			//fmt.Println(v.Addrs)
