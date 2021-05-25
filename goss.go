@@ -28,7 +28,7 @@ func Info() []byte {
 
 	n, _ := psnet.Interfaces()
 	//fmt.Println(n)
-	var ip string
+	var ip []string
 	for _, v := range n {
 		if len(v.Addrs) > 0 {
 			for _, a := range v.Addrs {
@@ -36,9 +36,9 @@ func Info() []byte {
 				if err != nil {
 					fmt.Println(err.Error)
 				}
-				if ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() {
+				if ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() && !ipnet.IP.IsLinkLocalUnicast() {
 					//fmt.Println(ipaddr.String())
-					ip = ipaddr.String()
+					ip = append(ip, ipaddr.String())
 				}
 			}
 			//fmt.Println(v.Addrs)
