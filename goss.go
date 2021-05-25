@@ -58,17 +58,6 @@ func Info() []byte {
 		}
 	}
 
-	const oneDay int = 60 * 60 * 24
-	if int(i.BootTime) > oneDay {
-		fmt.Println(i.Uptime)
-		day := int(i.Uptime) / oneDay
-		fmt.Println(day)
-		secondsOfTheDay := day * oneDay
-		fmt.Println(secondsOfTheDay)
-		minusDay := int(i.Uptime) - secondsOfTheDay
-		fmt.Println((time.Duration(minusDay) * time.Second).String())
-		fmt.Println(strconv.Itoa(day) + "d" + (time.Duration(minusDay) * time.Second).String())
-	}
 	var info map[string]interface{}
 	info = map[string]interface{}{
 		"hostname":        i.Hostname,
@@ -77,7 +66,7 @@ func Info() []byte {
 		"platformFamily":  i.PlatformFamily,
 		"platformVersion": i.PlatformVersion,
 		"kernelArch":      i.KernelArch,
-		"uptime":          (time.Duration(i.Uptime) * time.Second).String(),
+		"uptime":          uptime2string(i.Uptime),
 		"bootTime":        time.Unix(int64(i.BootTime), 0).Format(timeformat),
 		"serverTime":      time.Now().Format(timeformat),
 		"cpuTemperature":  cpu_temp,
@@ -86,6 +75,24 @@ func Info() []byte {
 	j, _ := json.Marshal(info)
 
 	return j
+}
+
+func uptime2string(uptime uint64) string {
+	const oneDay int = 60 * 60 * 24
+
+	if int(uptime) > oneDay {
+		//fmt.Println(uptime)
+		day := int(uptime) / oneDay
+		//fmt.Println(day)
+		secondsOfTheDay := day * oneDay
+		//fmt.Println(secondsOfTheDay)
+		minusDay := int(uptime) - secondsOfTheDay
+		//fmt.Println((time.Duration(minusDay) * time.Second).String())
+		//fmt.Println(strconv.Itoa(day) + "d" + (time.Duration(minusDay) * time.Second).String())
+
+		return strconv.Itoa(day) + "d" + (time.Duration(minusDay) * time.Second).String()
+	}
+	return ""
 }
 
 func Cpu() []byte {
