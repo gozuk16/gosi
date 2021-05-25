@@ -58,6 +58,17 @@ func Info() []byte {
 		}
 	}
 
+	const oneDay int = 60 * 60 * 24
+	if int(i.BootTime) > oneDay {
+		fmt.Println(i.Uptime)
+		day := int(i.Uptime) / oneDay
+		fmt.Println(day)
+		secondsOfTheDay := day * oneDay
+		fmt.Println(secondsOfTheDay)
+		minusDay := int(i.Uptime) - secondsOfTheDay
+		fmt.Println((time.Duration(minusDay) * time.Second).String())
+		fmt.Println(strconv.Itoa(day) + "d" + (time.Duration(minusDay) * time.Second).String())
+	}
 	var info map[string]interface{}
 	info = map[string]interface{}{
 		"hostname":        i.Hostname,
@@ -66,8 +77,8 @@ func Info() []byte {
 		"platformFamily":  i.PlatformFamily,
 		"platformVersion": i.PlatformVersion,
 		"kernelArch":      i.KernelArch,
-		"uptime":          strconv.FormatUint(i.Uptime, 10),
-		"bootTime":        strconv.FormatUint(i.BootTime, 10),
+		"uptime":          (time.Duration(i.Uptime) * time.Second).String(),
+		"bootTime":        time.Unix(int64(i.BootTime), 0).Format(timeformat),
 		"serverTime":      time.Now().Format(timeformat),
 		"cpuTemperature":  cpu_temp,
 		"ipaddr":          ip,
