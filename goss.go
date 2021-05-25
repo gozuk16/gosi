@@ -28,6 +28,7 @@ func Info() []byte {
 
 	n, _ := psnet.Interfaces()
 	//fmt.Println(n)
+	var ip string
 	for _, v := range n {
 		if len(v.Addrs) > 0 {
 			for _, a := range v.Addrs {
@@ -36,7 +37,8 @@ func Info() []byte {
 					fmt.Println(err.Error)
 				}
 				if ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() {
-					fmt.Println(ipaddr.String())
+					//fmt.Println(ipaddr.String())
+					ip = ipaddr.String()
 				}
 			}
 			//fmt.Println(v.Addrs)
@@ -68,6 +70,7 @@ func Info() []byte {
 		"bootTime":        strconv.FormatUint(i.BootTime, 10),
 		"serverTime":      time.Now().Format(timeformat),
 		"cpuTemperature":  cpu_temp,
+		"ipaddr":          ip,
 	}
 	j, _ := json.Marshal(info)
 
