@@ -14,6 +14,7 @@ import (
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
 	psnet "github.com/shirou/gopsutil/v3/net"
+	"github.com/shirou/gopsutil/v3/process"
 
 	"github.com/inhies/go-bytesize"
 )
@@ -185,4 +186,26 @@ func Disk() []byte {
 	j, _ := json.Marshal(disks)
 	//fmt.Println(string(j))
 	return j
+}
+
+func Process() {
+	fmt.Println(process.PidExists(7617))
+	//fmt.Println(process.Processes())
+	processes, _ := process.Processes()
+	for _, proc := range processes {
+		fmt.Printf("%v, ", proc.Pid)
+		name, _ := proc.Name()
+		fmt.Printf("%v, ", name)
+		cmd, _ := proc.Cmdline()
+		fmt.Printf("%v, ", cmd)
+		cpu, _ := proc.CPUPercent()
+		fmt.Printf("%v, ", cpu)
+		time, _ := proc.CreateTime()
+		fmt.Printf("%v, ", time)
+		exe, _ := proc.Exe()
+		fmt.Printf("%v, ", exe)
+		user, _ := proc.Username()
+		fmt.Printf("%v\n", user)
+	}
+
 }
