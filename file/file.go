@@ -28,18 +28,39 @@ func CrawlDirs(criteria string, keyFile string) ([]string, error) {
 		return nil, err
 	}
 
+	var result []string
 	for _, d := range dirs {
 		if d.IsDir() {
+			k, err := filepath.Abs(filepath.Join(criteria, d.Name(), keyFile))
+			if err != nil {
+				fmt.Println(err)
+				return nil, err
+			}
+			// keyFileがあるディレクトリのみ返す
+			if isFileExist(k) {
+				var dir string = d.Name()
+				result = append(result, dir)
+			}
 		}
 	}
 
-	// keyFileが無ければ除外
-
-	return nil, nil
+	return result, nil
 }
 
 // isDirExist 渡されたpathがディレクトリとして存在するか
 func isDirExist(path string) bool {
-	f, err := os.Stat(path)
-	return os.IsNotExist(err) || !f.IsDir()
+	if f, err := os.Stat(path); os.IsNotExist(err) || !f.IsDir() {
+		return false
+	} else {
+		return true
+	}
+}
+
+// isFileExist 渡されたpathがファイルとして存在するか
+func isFileExist(path string) bool {
+	if f, err := os.Stat(path); os.IsNotExist(err) || f.IsDir() {
+		return false
+	} else {
+		return true
+	}
 }
