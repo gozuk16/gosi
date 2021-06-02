@@ -207,5 +207,8 @@ func Process() {
 		user, _ := proc.Username()
 		fmt.Printf("%v\n", user)
 	}
+	proc, _ := process.NewProcess(50285)
+	fmt.Println(proc.Cmdline())
+	fmt.Println(proc.Status())
 
 }
