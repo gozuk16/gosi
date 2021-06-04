@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+// CrawlDirs 渡されたcriteriaの直下にあるディレクトリの中に、keyFileが存在している場合のみディレクトリ名を配列で返す
+// keyFileが空なら直下のディレクトリを全部返す
 func CrawlDirs(criteria string, keyFile string) ([]string, error) {
 	if criteria == "" {
 		return nil, fmt.Errorf("criteria is nothing.")
@@ -31,15 +33,21 @@ func CrawlDirs(criteria string, keyFile string) ([]string, error) {
 	var result []string
 	for _, d := range dirs {
 		if d.IsDir() {
-			k, err := filepath.Abs(filepath.Join(criteria, d.Name(), keyFile))
-			if err != nil {
-				fmt.Println(err)
-				return nil, err
-			}
-			// keyFileがあるディレクトリのみ返す
-			if isFileExist(k) {
+			if keyFile == "" {
+				// keyFileが空なら直下のディレクトリを全部返す
 				var dir string = d.Name()
 				result = append(result, dir)
+			} else {
+				k, err := filepath.Abs(filepath.Join(criteria, d.Name(), keyFile))
+				if err != nil {
+					fmt.Println(err)
+					return nil, err
+				}
+				// keyFileがあるディレクトリのみ返す
+				if isFileExist(k) {
+					var dir string = d.Name()
+					result = append(result, dir)
+				}
 			}
 		}
 	}
