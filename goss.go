@@ -188,25 +188,27 @@ func Disk() []byte {
 	return j
 }
 
-func Process() {
-	fmt.Println(process.PidExists(7617))
+func Process(pid int) {
 	//fmt.Println(process.Processes())
-	processes, _ := process.Processes()
-	for _, proc := range processes {
-		fmt.Printf("%v, ", proc.Pid)
-		name, _ := proc.Name()
-		fmt.Printf("%v, ", name)
-		cmd, _ := proc.Cmdline()
-		fmt.Printf("%v, ", cmd)
-		cpu, _ := proc.CPUPercent()
-		fmt.Printf("%v, ", cpu)
-		time, _ := proc.CreateTime()
-		fmt.Printf("%v, ", time)
-		exe, _ := proc.Exe()
-		fmt.Printf("%v, ", exe)
-		user, _ := proc.Username()
-		fmt.Printf("%v\n", user)
-	}
+	/*
+		processes, _ := process.Processes()
+		for _, proc := range processes {
+			fmt.Printf("%v, ", proc.Pid)
+			name, _ := proc.Name()
+			fmt.Printf("%v, ", name)
+			cmd, _ := proc.Cmdline()
+			fmt.Printf("%v, ", cmd)
+			cpu, _ := proc.CPUPercent()
+			fmt.Printf("%v, ", cpu)
+			time, _ := proc.CreateTime()
+			fmt.Printf("%v, ", time)
+			exe, _ := proc.Exe()
+			fmt.Printf("%v, ", exe)
+			user, _ := proc.Username()
+			fmt.Printf("%v\n", user)
+		}
+	*/
+	fmt.Println(process.PidExists(7617))
 	proc, _ := process.NewProcess(50285)
 	fmt.Println(proc.Cmdline())
 	fmt.Println(proc.Status())
