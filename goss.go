@@ -6,6 +6,7 @@ import (
 	"math"
 	"net"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/cpu"
@@ -78,6 +79,7 @@ func Info() []byte {
 	return j
 }
 
+// uptime2string uptime(経過秒)を00d00h00m00sに変換する
 func uptime2string(uptime uint64) string {
 	const oneDay int = 60 * 60 * 24
 
@@ -188,29 +190,38 @@ func Disk() []byte {
 	return j
 }
 
-func Process(pid int) {
-	//fmt.Println(process.Processes())
-	/*
-		processes, _ := process.Processes()
-		for _, proc := range processes {
-			fmt.Printf("%v, ", proc.Pid)
-			name, _ := proc.Name()
-			fmt.Printf("%v, ", name)
-			cmd, _ := proc.Cmdline()
-			fmt.Printf("%v, ", cmd)
-			cpu, _ := proc.CPUPercent()
-			fmt.Printf("%v, ", cpu)
-			time, _ := proc.CreateTime()
-			fmt.Printf("%v, ", time)
-			exe, _ := proc.Exe()
-			fmt.Printf("%v, ", exe)
-			user, _ := proc.Username()
-			fmt.Printf("%v\n", user)
-		}
-	*/
-	fmt.Println(process.PidExists(7617))
-	proc, _ := process.NewProcess(50285)
-	fmt.Println(proc.Cmdline())
-	fmt.Println(proc.Status())
+func Process(pid int32) []byte {
+	p, _ := process.NewProcess(pid)
 
+	var proc map[string]interface{}
+	name, _ := p.Name()
+	cpupercent, _ := p.CPUPercent()
+	cpupercent = cpupercent * 100
+	cputime, _ := p.Times()
+	//memory, _ := p.MemoryInfo()
+	cmdline, _ := p.Cmdline()
+	createtime, _ := p.CreateTime()
+	isexists, _ := process.PidExists(pid)
+	statuses, _ := p.Status()
+	status := strings.Join(statuses, ", ")
+	parent, _ := p.Parent()
+	ppid, _ := p.Ppid()
+
+	//fmt.Printf("%v %v %v %v", name, memory, isexists, status)
+
+	proc = map[string]interface{}{
+		"name":       name,
+		"cpuPercent": math.Round(cpupercent*10) / 10,
+		"cpuTime":    cputime,
+		//"memory":     memory,
+		"cmdline":    cmdline,
+		"createTime": time.Unix(createtime/1000, 0).Format(timeformat),
+		"isExists":   isexists,
+		"status":     status,
+		"pid":        p.Pid,
+		"parent":     parent,
+		"ppid":       ppid,
+	}
+	j, _ := json.Marshal(proc)
+	return j
 }
