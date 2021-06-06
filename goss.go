@@ -198,7 +198,7 @@ func Process(pid int32) []byte {
 	cpupercent, _ := p.CPUPercent()
 	cpupercent = cpupercent * 100
 	cputime, _ := p.Times()
-	//memory, _ := p.MemoryInfo()
+	memory, _ := p.MemoryInfo()
 	cmdline, _ := p.Cmdline()
 	createtime, _ := p.CreateTime()
 	isexists, _ := process.PidExists(pid)
@@ -213,7 +213,9 @@ func Process(pid int32) []byte {
 		"name":       name,
 		"cpuPercent": math.Round(cpupercent*10) / 10,
 		"cpuTime":    cputime,
-		//"memory":     memory,
+		"vms":        bytesize.New(float64(memory.VMS)).String(),
+		"rss":        bytesize.New(float64(memory.RSS)).String(),
+		"swap":       bytesize.New(float64(memory.Swap)).String(),
 		"cmdline":    cmdline,
 		"createTime": time.Unix(createtime/1000, 0).Format(timeformat),
 		"isExists":   isexists,
