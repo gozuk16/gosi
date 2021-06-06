@@ -212,7 +212,11 @@ func Process(pid int32) []byte {
 	proc = map[string]interface{}{
 		"name":       name,
 		"cpuPercent": math.Round(cpupercent*10) / 10,
-		"cpuTime":    cputime,
+		"cpuTotal":   math.Round(cputime.Total()*100) / 100,
+		"cpuUser":    cputime.User,
+		"cpuSystem":  cputime.System,
+		"cpuIdle":    cputime.Idle,
+		"cpuIowait":  cputime.Iowait,
 		"vms":        bytesize.New(float64(memory.VMS)).String(),
 		"rss":        bytesize.New(float64(memory.RSS)).String(),
 		"swap":       bytesize.New(float64(memory.Swap)).String(),
