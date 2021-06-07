@@ -206,6 +206,18 @@ func Process(pid int32) []byte {
 	status := strings.Join(statuses, ", ")
 	parent, _ := p.Parent()
 	ppid, _ := p.Ppid()
+	children, _ := p.Children()
+	var cnames []string
+	var cpids []int32
+	var ccmdline []string
+	for _, c := range children {
+		cn, _ := c.Name()
+		ccmd, _ := c.Cmdline()
+		cnames = append(cnames, cn)
+		cpids = append(cpids, c.Pid)
+		ccmdline = append(ccmdline, ccmd)
+	}
+	fmt.Printf("%v %v %v\n", cnames, cpids, ccmdline)
 
 	//fmt.Printf("%v %v %v %v", name, memory, isexists, status)
 
