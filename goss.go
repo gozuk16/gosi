@@ -93,7 +93,7 @@ func uptime2string(uptime uint64) string {
 		//fmt.Println((time.Duration(minusDay) * time.Second).String())
 		//fmt.Println(strconv.Itoa(day) + "d" + (time.Duration(minusDay) * time.Second).String())
 
-		return strconv.Itoa(day) + "d" + (time.Duration(minusDay) * time.Second).String()
+		return strconv.Itoa(day) + "days, " + (time.Duration(minusDay) * time.Second).String()
 	}
 	return ""
 }
