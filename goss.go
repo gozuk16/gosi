@@ -79,23 +79,27 @@ func Info() []byte {
 	return j
 }
 
-// uptime2string uptime(経過秒)を00d00h00m00sに変換する
+// uptime2string uptime(経過秒)をuptimeと同じ"0 days, 00:00"形式に変換する
 func uptime2string(uptime uint64) string {
 	const oneDay int = 60 * 60 * 24
 
 	if int(uptime) > oneDay {
-		//fmt.Println(uptime)
 		day := int(uptime) / oneDay
-		//fmt.Println(day)
 		secondsOfTheDay := day * oneDay
-		//fmt.Println(secondsOfTheDay)
-		minusDay := int(uptime) - secondsOfTheDay
-		//fmt.Println((time.Duration(minusDay) * time.Second).String())
-		//fmt.Println(strconv.Itoa(day) + "d" + (time.Duration(minusDay) * time.Second).String())
-
-		return strconv.Itoa(day) + "days, " + (time.Duration(minusDay) * time.Second).String()
+		d := time.Duration(int(uptime)-secondsOfTheDay) * time.Second
+		d = d.Round(time.Minute)
+		h := d / time.Hour
+		d -= h * time.Hour
+		m := d / time.Minute
+		return fmt.Sprintf("%d days, %d:%02d", day, h, m)
+	} else {
+		d := time.Duration(int(uptime)) * time.Second
+		d = d.Round(time.Minute)
+		h := d / time.Hour
+		d -= h * time.Hour
+		m := d / time.Minute
+		return fmt.Sprintf("%d:%02d", h, m)
 	}
-	return ""
 }
 
 func Cpu() []byte {
