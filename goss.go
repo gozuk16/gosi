@@ -22,6 +22,8 @@ import (
 
 const timeformat = "2006/01/02 15:04:05"
 
+var cpupercent uint
+
 func Info() []byte {
 	i, _ := host.Info()
 
@@ -102,24 +104,34 @@ func uptime2string(uptime uint64) string {
 	}
 }
 
+// Cpu CPU情報を取得
 func Cpu() []byte {
-	c, _ := cpu.Percent(time.Millisecond*200, false)
-	core, _ := cpu.Percent(time.Millisecond*200, true)
+	//	c, _ := cpu.Percent(time.Millisecond*200, false)
+	//	core, _ := cpu.Percent(time.Millisecond*200, true)
 	//fmt.Printf("%f%%\n", c)
 
 	var cpu map[string]interface{}
-	total := uint(c[0])
-	var p = []uint{}
-	for _, v := range core {
-		p = append(p, uint(v))
-	}
+	//	total := uint(c[0])
+	total := cpupercent
+	/*
+		var p = []uint{}
+		for _, v := range core {
+			p = append(p, uint(v))
+		}
+	*/
 	cpu = map[string]interface{}{
-		"total":  total,
-		"percpu": p,
+		"total": total,
+		//		"percpu": p,
 	}
 	j, _ := json.Marshal(cpu)
 
 	return j
+}
+
+// RefreshCpu グローバル変数のCPU情報を更新
+func RefreshCpu() {
+	c, _ := cpu.Percent(time.Millisecond*200, false)
+	cpupercent = uint(c[0])
 }
 
 func Load() []byte {
