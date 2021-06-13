@@ -130,8 +130,9 @@ func Cpu() []byte {
 
 // RefreshCpu グローバル変数のCPU情報を更新
 func RefreshCpu() {
-	c, _ := cpu.Percent(time.Millisecond*200, false)
+	c, _ := cpu.Percent(time.Millisecond*1000, false)
 	cpupercent = uint(c[0])
+	fmt.Println("cpu%: ", cpupercent)
 }
 
 func Load() []byte {
