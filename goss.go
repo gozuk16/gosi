@@ -207,10 +207,24 @@ func Disk() []byte {
 	return j
 }
 
-func Process(pid int32) []byte {
+// Processes プロセス情報をまとめて返す
+func Processes(pids []int32) []map[string]interface{} {
+	//result := [][]byte{}
+	var result []map[string]interface{}
+	for _, pid := range pids {
+		//p, _ := process.NewProcess(pid)
+		pi := Process(pid)
+		result = append(result, pi)
+	}
+
+	//j, _ := json.Marshal(result)
+	return result
+}
+
+// Process プロセス情報を返す
+func Process(pid int32) map[string]interface{} {
 	p, _ := process.NewProcess(pid)
 
-	var proc map[string]interface{}
 	name, _ := p.Name()
 	cpupercent, _ := p.CPUPercent()
 	cpupercent = cpupercent * 100
@@ -238,6 +252,7 @@ func Process(pid int32) []byte {
 
 	//fmt.Printf("%v %v %v %v", name, memory, isexists, status)
 
+	var proc map[string]interface{}
 	proc = map[string]interface{}{
 		"name":       name,
 		"cpuPercent": math.Round(cpupercent*10) / 10,
@@ -257,6 +272,9 @@ func Process(pid int32) []byte {
 		"parent":     parent,
 		"ppid":       ppid,
 	}
+	/*
 	j, _ := json.Marshal(proc)
 	return j
+	*/
+	return proc
 }
