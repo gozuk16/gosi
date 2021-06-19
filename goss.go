@@ -132,7 +132,7 @@ func Cpu() []byte {
 func RefreshCpu() {
 	c, _ := cpu.Percent(time.Millisecond*1000, false)
 	cpupercent = uint(c[0])
-	fmt.Println("cpu%: ", cpupercent)
+	//fmt.Println("cpu%: ", cpupercent)
 }
 
 func Load() []byte {
@@ -248,7 +248,7 @@ func Process(pid int32) map[string]interface{} {
 		cpids = append(cpids, c.Pid)
 		ccmdline = append(ccmdline, ccmd)
 	}
-	fmt.Printf("%v %v %v\n", cnames, cpids, ccmdline)
+	//fmt.Printf("%v %v %v\n", cnames, cpids, ccmdline)
 
 	//fmt.Printf("%v %v %v %v", name, memory, isexists, status)
 
