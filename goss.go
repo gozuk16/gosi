@@ -238,15 +238,22 @@ func Process(pid int32) map[string]interface{} {
 	parent, _ := p.Parent()
 	ppid, _ := p.Ppid()
 	children, _ := p.Children()
-	var cnames []string
-	var cpids []int32
-	var ccmdline []string
+	//var cnames []string
+	//var cpids []int32
+	//var ccmdline []string
+	var procChildren []map[string]interface{}
 	for _, c := range children {
 		cn, _ := c.Name()
 		ccmd, _ := c.Cmdline()
-		cnames = append(cnames, cn)
-		cpids = append(cpids, c.Pid)
-		ccmdline = append(ccmdline, ccmd)
+		//cnames = append(cnames, cn)
+		//cpids = append(cpids, c.Pid)
+		//ccmdline = append(ccmdline, ccmd)
+		cproc := map[string]interface{}{
+			"name":    cn,
+			"cmdline": ccmd,
+			"pid":     c.Pid,
+		}
+		procChildren = append(procChildren, cproc)
 	}
 	//fmt.Printf("%v %v %v\n", cnames, cpids, ccmdline)
 
@@ -271,10 +278,11 @@ func Process(pid int32) map[string]interface{} {
 		"pid":        p.Pid,
 		"parent":     parent,
 		"ppid":       ppid,
+		"children":   procChildren,
 	}
 	/*
-	j, _ := json.Marshal(proc)
-	return j
+		j, _ := json.Marshal(proc)
+		return j
 	*/
 	return proc
 }
