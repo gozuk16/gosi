@@ -235,19 +235,12 @@ func Process(pid int32) map[string]interface{} {
 	isexists, _ := process.PidExists(pid)
 	statuses, _ := p.Status()
 	status := strings.Join(statuses, ", ")
-	parent, _ := p.Parent()
 	ppid, _ := p.Ppid()
 	children, _ := p.Children()
-	//var cnames []string
-	//var cpids []int32
-	//var ccmdline []string
 	var procChildren []map[string]interface{}
 	for _, c := range children {
 		cn, _ := c.Name()
 		ccmd, _ := c.Cmdline()
-		//cnames = append(cnames, cn)
-		//cpids = append(cpids, c.Pid)
-		//ccmdline = append(ccmdline, ccmd)
 		cproc := map[string]interface{}{
 			"name":    cn,
 			"cmdline": ccmd,
@@ -255,8 +248,6 @@ func Process(pid int32) map[string]interface{} {
 		}
 		procChildren = append(procChildren, cproc)
 	}
-	//fmt.Printf("%v %v %v\n", cnames, cpids, ccmdline)
-
 	//fmt.Printf("%v %v %v %v", name, memory, isexists, status)
 
 	var proc map[string]interface{}
@@ -276,7 +267,6 @@ func Process(pid int32) map[string]interface{} {
 		"isExists":   isexists,
 		"status":     status,
 		"pid":        p.Pid,
-		"parent":     parent,
 		"ppid":       ppid,
 		"children":   procChildren,
 	}
