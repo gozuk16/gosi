@@ -32,7 +32,7 @@ func Info() []byte {
 
 	n, _ := psnet.Interfaces()
 	//fmt.Println(n)
-	var ip []string
+	var ipaddres []map[string]interface{}
 	for _, v := range n {
 		if len(v.Addrs) > 0 {
 			for _, a := range v.Addrs {
@@ -42,7 +42,12 @@ func Info() []byte {
 				}
 				if ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() && !ipnet.IP.IsLinkLocalUnicast() {
 					//fmt.Println(ipaddr.String())
-					ip = append(ip, ipaddr.String())
+					ip := map[string]interface{}{
+						"name":   v.Name,
+						"ipaddr": ipaddr.String(),
+					}
+					//ip = append(ip, v.Name, ipaddr.String())
+					ipaddres = append(ipaddres, ip)
 				}
 			}
 			//fmt.Println(v.Addrs)
@@ -74,7 +79,7 @@ func Info() []byte {
 		"bootTime":        time.Unix(int64(i.BootTime), 0).Format(timeformat),
 		"serverTime":      time.Now().Format(timeformat),
 		"cpuTemperature":  cpu_temp,
-		"ipaddr":          ip,
+		"ipaddr":          ipaddres,
 	}
 	j, _ := json.Marshal(info)
 
@@ -189,7 +194,8 @@ func Disk() []byte {
 		total := bytesize.New(float64(d.Total))
 		free := bytesize.New(float64(d.Free))
 		used := bytesize.New(float64(d.Used))
-		bytesize.Format = "%.1f "
+		//bytesize.Format = "%.1f "
+		bytesize.Format = "%.0f "
 		usedPercent := math.Round(d.UsedPercent*10) / 10
 		//fmt.Printf("%v %v %v", total, free, used)
 		di := map[string]interface{}{
@@ -231,6 +237,8 @@ func Process(pid int32) map[string]interface{} {
 	cputime, _ := p.Times()
 	memory, _ := p.MemoryInfo()
 	cmdline, _ := p.Cmdline()
+	exe, _ := p.Exe()
+	cwd, _ := p.Cwd()
 	createtime, _ := p.CreateTime()
 	isexists, _ := process.PidExists(pid)
 	statuses, _ := p.Status()
@@ -241,10 +249,12 @@ func Process(pid int32) map[string]interface{} {
 	for _, c := range children {
 		cn, _ := c.Name()
 		ccmd, _ := c.Cmdline()
+		cmem, _ := c.MemoryInfo()	// TODO:rssを取り出して変換
 		cproc := map[string]interface{}{
 			"name":    cn,
 			"cmdline": ccmd,
 			"pid":     c.Pid,
+			"mem":     cmem,
 		}
 		procChildren = append(procChildren, cproc)
 	}
@@ -263,6 +273,8 @@ func Process(pid int32) map[string]interface{} {
 		"rss":        bytesize.New(float64(memory.RSS)).String(),
 		"swap":       bytesize.New(float64(memory.Swap)).String(),
 		"cmdline":    cmdline,
+		"exe":        exe,
+		"cwd":        cwd,
 		"createTime": time.Unix(createtime/1000, 0).Format(timeformat),
 		"isExists":   isexists,
 		"status":     status,
