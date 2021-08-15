@@ -8,7 +8,10 @@ on:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
       - name: setup
         uses: actions/setup-go@v2
@@ -28,7 +31,10 @@ jobs:
 
   build:
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
       - name: build
