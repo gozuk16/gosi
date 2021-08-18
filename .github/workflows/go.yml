@@ -29,17 +29,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-  build:
-    needs: setup
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    steps:
-      - uses: actions/checkout@v2
-      - name: build
-        run: go build ./...
-
   test:
     needs: setup
     runs-on: ${{ matrix.os }}
