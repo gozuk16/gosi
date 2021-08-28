@@ -24,66 +24,67 @@ const timeformat = "2006/01/02 15:04:05"
 
 var cpupercent uint
 
-func Info() []byte {
+type IpAddr struct {
+	Name   string `json:"name"`
+	IpAddr string `json:"ipaddr"`
+}
+
+type InfoStat struct {
+	Hostname        string   `json:"hostname"`
+	OS              string   `json:"os"`
+	Platform        string   `json:"platform"`
+	PlatformFamily  string   `json:"platformFamily"`
+	PlatformVersion string   `json:"platformVersion"`
+	KernelArch      string   `json:"kernelArch"`
+	Uptime          string   `json:"uptime"`
+	BootTime        string   `json:"bootTime"`
+	ServerTime      string   `json:"serverTime"`
+	CpuTemperature  string   `json:"cpuTemperature"`
+	IpAddres        []IpAddr `json:"ipaddr"`
+}
+
+func (s InfoStat) Json() []byte {
+	j, _ := json.Marshal(s)
+	return j
+}
+
+// Info ホスト情報を取得
+func Info() *InfoStat {
+	ret := &InfoStat{}
+
 	i, _ := host.Info()
 
-	// convert to JSON. String() is also implemented
-	//fmt.Println(i)
+	ret.Hostname = i.Hostname
+	ret.OS = i.OS
+	ret.Platform = i.Platform
+	ret.PlatformFamily = i.PlatformFamily
+	ret.PlatformVersion = i.PlatformVersion
+	ret.KernelArch = i.KernelArch
+	ret.Uptime = uptime2string(i.Uptime)
+	ret.BootTime = time.Unix(int64(i.BootTime), 0).Format(timeformat)
+	ret.ServerTime = time.Now().Format(timeformat)
 
 	n, _ := psnet.Interfaces()
-	//fmt.Println(n)
-	var ipaddres []map[string]interface{}
+	ipaddres := make([]IpAddr, 0)
 	for _, v := range n {
 		if len(v.Addrs) > 0 {
 			for _, a := range v.Addrs {
 				ipaddr, ipnet, err := net.ParseCIDR(a.Addr)
 				if err != nil {
-					fmt.Println(err.Error)
+					fmt.Println(err)
 				}
 				if ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() && !ipnet.IP.IsLinkLocalUnicast() {
-					//fmt.Println(ipaddr.String())
-					ip := map[string]interface{}{
-						"name":   v.Name,
-						"ipaddr": ipaddr.String(),
-					}
-					//ip = append(ip, v.Name, ipaddr.String())
-					ipaddres = append(ipaddres, ip)
+					ipaddres = append(ipaddres, IpAddr{v.Name, ipaddr.String()})
 				}
 			}
-			//fmt.Println(v.Addrs)
 		}
 	}
 
-	t, _ := host.SensorsTemperatures()
-	//fmt.Println(t)
-	var cpu_temp string
-	for _, v2 := range t {
-		//if v2.Temperature > 0 {
-		//	fmt.Println(v2.SensorKey + ": " + strconv.FormatFloat(v2.Temperature, 'f', -1, 64))
-		//}
-		if v2.SensorKey == "TC0P" {
-			cpu_temp = strconv.FormatFloat(v2.Temperature, 'f', -1, 64) + "℃"
-			break
-		}
-	}
+	ret.IpAddres = ipaddres
 
-	var info map[string]interface{}
-	info = map[string]interface{}{
-		"hostname":        i.Hostname,
-		"os":              i.OS,
-		"platform":        i.Platform,
-		"platformFamily":  i.PlatformFamily,
-		"platformVersion": i.PlatformVersion,
-		"kernelArch":      i.KernelArch,
-		"uptime":          uptime2string(i.Uptime),
-		"bootTime":        time.Unix(int64(i.BootTime), 0).Format(timeformat),
-		"serverTime":      time.Now().Format(timeformat),
-		"cpuTemperature":  cpu_temp,
-		"ipaddr":          ipaddres,
-	}
-	j, _ := json.Marshal(info)
+	ret.CpuTemperature, _ = getTemperatures()
 
-	return j
+	return ret
 }
 
 // uptime2string uptime(経過秒)をuptimeと同じ"0 days, 00:00"形式に変換する
@@ -249,7 +250,7 @@ func Process(pid int32) map[string]interface{} {
 	for _, c := range children {
 		cn, _ := c.Name()
 		ccmd, _ := c.Cmdline()
-		cmem, _ := c.MemoryInfo()	// TODO:rssを取り出して変換
+		cmem, _ := c.MemoryInfo() // TODO:rssを取り出して変換
 		cproc := map[string]interface{}{
 			"name":    cn,
 			"cmdline": ccmd,
