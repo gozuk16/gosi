@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/process"
@@ -53,38 +52,6 @@ func Mem() []byte {
 		"usedPercent": uint(usedPercent),
 	}
 	j, _ := json.Marshal(mem)
-	return j
-}
-
-func Disk() []byte {
-	p, _ := disk.Partitions(true)
-
-	// convert to JSON. String() is also implemented
-	//fmt.Println(p)
-
-	var disks []map[string]interface{}
-	for _, v := range p {
-		//b, _ := json.Marshal(v)
-		d, _ := disk.Usage(v.Mountpoint)
-		total := bytesize.New(float64(d.Total))
-		free := bytesize.New(float64(d.Free))
-		used := bytesize.New(float64(d.Used))
-		//bytesize.Format = "%.1f "
-		bytesize.Format = "%.0f "
-		usedPercent := math.Round(d.UsedPercent*10) / 10
-		//fmt.Printf("%v %v %v", total, free, used)
-		di := map[string]interface{}{
-			"name":        d.Path,
-			"total":       total.String(),
-			"free":        free.String(),
-			"used":        used.String(),
-			"usedPercent": uint(usedPercent),
-		}
-		disks = append(disks, di)
-	}
-
-	j, _ := json.Marshal(disks)
-	//fmt.Println(string(j))
 	return j
 }
 
