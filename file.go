@@ -1,5 +1,4 @@
-// file ファイルやディレクトリを扱うライブラリ
-package file
+package goss
 
 import (
 	"fmt"
