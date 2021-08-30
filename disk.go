@@ -35,13 +35,16 @@ func Disk() DiskStats {
 
 	bytesize.Format = "%.0f "
 	for _, v := range p {
-		d, _ := disk.Usage(v.Mountpoint)
-		total := bytesize.New(float64(d.Total))
-		free := bytesize.New(float64(d.Free))
-		used := bytesize.New(float64(d.Used))
-		usedPercent := math.Round(d.UsedPercent*10) / 10
+		//fmt.Println(v.Mountpoint, v.Device, v.Fstype, v.Opts)
+		if isVaildPartition(v.Mountpoint, v.Opts) {
+			d, _ := disk.Usage(v.Mountpoint)
+			total := bytesize.New(float64(d.Total))
+			free := bytesize.New(float64(d.Free))
+			used := bytesize.New(float64(d.Used))
+			usedPercent := math.Round(d.UsedPercent*10) / 10
 
-		ret = append(ret, DiskStat{d.Path, total.String(), free.String(), used.String(), uint(usedPercent)})
+			ret = append(ret, DiskStat{d.Path, total.String(), free.String(), used.String(), uint(usedPercent)})
+		}
 	}
 
 	return ret
