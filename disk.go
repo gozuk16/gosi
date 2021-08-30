@@ -17,12 +17,18 @@ type DiskStat struct {
 	UsedPercent uint   `json:"usedPercent"`
 }
 
-func (d DiskStat) Json() []byte {
-	j, _ := json.Marshal(d)
-	return j
+type DiskStats []DiskStat
+
+func (d DiskStats) Json() []byte {
+	var ret []byte
+	for _, v := range d {
+		j, _ := json.Marshal(v)
+		ret = append(ret, j...)
+	}
+	return ret
 }
 
-func Disk() []DiskStat {
+func Disk() DiskStats {
 	ret := []DiskStat{}
 
 	p, _ := disk.Partitions(true)
