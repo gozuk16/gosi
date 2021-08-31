@@ -1,42 +1,14 @@
 package goss
 
 import (
-	"encoding/json"
 	"math"
 	"strings"
 	"time"
 
-	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/process"
 
 	"github.com/inhies/go-bytesize"
 )
-
-func Mem() []byte {
-	v, _ := mem.VirtualMemory()
-
-	// almost every return value is a struct
-	//fmt.Printf("Total: %v, Free:%v, UsedPercent:%f%%\n", v.Total, v.Free, v.UsedPercent)
-
-	// convert to JSON. String() is also implemented
-	//fmt.Println(v)
-
-	var mem map[string]interface{}
-	total := bytesize.New(float64(v.Total))
-	available := bytesize.New(float64(v.Available))
-	used := bytesize.New(float64(v.Used))
-	bytesize.Format = "%.1f "
-	usedPercent := math.Round(v.UsedPercent*10) / 10
-	//fmt.Printf("%v %v %v", total, free, used)
-	mem = map[string]interface{}{
-		"total":       total.String(),
-		"available":   available.String(),
-		"used":        used.String(),
-		"usedPercent": uint(usedPercent),
-	}
-	j, _ := json.Marshal(mem)
-	return j
-}
 
 // Processes プロセス情報をまとめて返す
 func Processes(pids []int32) []map[string]interface{} {
