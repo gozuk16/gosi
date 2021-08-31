@@ -1,2 +1,2 @@
 # goss
-Go library for Server Stat
+Server Stats library for Go
