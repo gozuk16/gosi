@@ -3,31 +3,14 @@ package goss
 import (
 	"encoding/json"
 	"math"
-	"strconv"
 	"strings"
 	"time"
 
-	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/process"
 
 	"github.com/inhies/go-bytesize"
 )
-
-func Load() []byte {
-	l, _ := load.Avg()
-	//fmt.Printf("%f\n", l)
-
-	var loadAvg map[string]interface{}
-	loadAvg = map[string]interface{}{
-		"load1":  strconv.FormatFloat(l.Load1, 'f', 2, 64),
-		"load5":  strconv.FormatFloat(l.Load5, 'f', 2, 64),
-		"load15": strconv.FormatFloat(l.Load15, 'f', 2, 64),
-	}
-	j, _ := json.Marshal(loadAvg)
-
-	return j
-}
 
 func Mem() []byte {
 	v, _ := mem.VirtualMemory()
