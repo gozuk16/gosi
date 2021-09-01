@@ -3,6 +3,7 @@ package goss
 import (
 	"encoding/json"
 	"math"
+	"fmt"
 
 	"github.com/shirou/gopsutil/v3/disk"
 
@@ -20,12 +21,8 @@ type DiskStat struct {
 type DiskStats []DiskStat
 
 func (d DiskStats) Json() []byte {
-	var ret []byte
-	for _, v := range d {
-		j, _ := json.Marshal(v)
-		ret = append(ret, j...)
-	}
-	return ret
+	j, _ := json.Marshal(d)
+	return j
 }
 
 func Disk() DiskStats {
@@ -35,7 +32,7 @@ func Disk() DiskStats {
 
 	bytesize.Format = "%.0f "
 	for _, v := range p {
-		//fmt.Println(v.Mountpoint, v.Device, v.Fstype, v.Opts)
+		fmt.Println(v.Mountpoint, v.Device, v.Fstype, v.Opts)
 		if isVaildPartition(v.Mountpoint, v.Opts) {
 			d, _ := disk.Usage(v.Mountpoint)
 			total := bytesize.New(float64(d.Total))
