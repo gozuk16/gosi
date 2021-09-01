@@ -6,6 +6,8 @@ func isVaildPartition(name string, opts []string) bool {
 		name == "/System/Volumes/VM" ||
 		name == "/System/Volumes/Preboot" ||
 		name == "/System/Volumes/Update" ||
+		name == "/private/var/vm" ||
+		name == "/Volumes/Recovery" ||
 		name == "/System/Volumes/Data/home" {
 		return false
 	} else if len(opts) > 0 {
