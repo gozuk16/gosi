@@ -1,4 +1,4 @@
-package goss
+package gosi
 
 // isVaildPartition システムで予約されているパーティション、ネットワークマウントやdmg(Optsがnodevのもの)をfalseで返す
 func isVaildPartition(name string, opts []string) bool {

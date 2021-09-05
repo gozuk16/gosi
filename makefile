@@ -1,4 +1,4 @@
-SRC=goss.go goss_*.go
+SRC=gosi.go gosi_test.go
 
 build:
 	go build $(SRC)

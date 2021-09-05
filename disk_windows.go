@@ -1,4 +1,4 @@
-package goss
+package gosi
 
 // isVaildPartition システムで予約されているパーティション、ネットワークマウントや特殊なものをfalseで返す
 // ネットワークドライブはgopsutilでは最初から除外されている

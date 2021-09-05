@@ -1,4 +1,4 @@
-module github.com/gozuk16/goss
+module github.com/gozuk16/gosi
 
 go 1.16
 

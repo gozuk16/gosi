@@ -1,4 +1,4 @@
-package goss
+package gosi
 
 import (
 	"fmt"
