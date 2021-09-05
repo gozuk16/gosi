@@ -1,2 +1,2 @@
-# goss
-Server Stats library for Go
+# gosi
+System Information library for Go
