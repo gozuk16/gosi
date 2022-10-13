@@ -10,7 +10,8 @@ import (
 	psnet "github.com/shirou/gopsutil/v3/net"
 )
 
-const timeformat = "2006/01/02 15:04:05"
+//const timeformat = "2006/01/02 15:04:05"
+const timeformat = "2006/01/02 15:04:05.000000000"
 
 type IpAddr struct {
 	Name   string `json:"name"`
@@ -49,7 +50,8 @@ func Info() *InfoStat {
 	ret.PlatformVersion = i.PlatformVersion
 	ret.KernelArch = i.KernelArch
 	ret.Uptime = uptime2string(i.Uptime)
-	ret.BootTime = time.Unix(int64(i.BootTime), 0).Format(timeformat)
+	//ret.BootTime = time.Unix(int64(i.BootTime), 0).Format(timeformat)
+	ret.BootTime = time.Unix(int64(i.BootTime), int64(i.BootTime)%1000000000).Format(timeformat)
 	ret.ServerTime = time.Now().Format(timeformat)
 
 	n, _ := psnet.Interfaces()
