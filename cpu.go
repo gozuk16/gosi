@@ -2,8 +2,8 @@ package gosi
 
 import (
 	"encoding/json"
+	"math"
 	"strconv"
-	"time"
 
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/load"
@@ -36,8 +36,9 @@ func Cpu() *CpuStat {
 
 // RefreshCpu グローバル変数のCPU情報を更新
 func RefreshCpu() {
-	c, _ := cpu.Percent(time.Millisecond*1000, false)
-	cpupercent = uint(c[0])
+	//c, _ := cpu.Percent(1*time.Millisecond, false)
+	c, _ := cpu.Percent(0, false)
+	cpupercent = uint(math.Round(c[0]))
 }
 
 // load avarageをフォーマットして返す
