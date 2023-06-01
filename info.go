@@ -72,7 +72,8 @@ func Info() *InfoStat {
 
 	ret.IpAddres = ipaddres
 
-	ret.CpuTemperature, _ = getTemperatures()
+	// 仮想環境では温度が取得できないが、WindowsではVirtualizationSystemが取れないのでとりあえずコメントにしておく
+	//ret.CpuTemperature, _ = getTemperatures()
 
 	return ret
 }
