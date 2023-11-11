@@ -10,14 +10,14 @@ import (
 )
 
 type CpuStat struct {
-	Total  uint   `json:"total"`
-	Num    int    `json:"num"`
-	Load1  string `json:"load1"`
-	Load5  string `json:"load5"`
-	Load15 string `json:"load15"`
+	Total  float64 `json:"total"`
+	Num    int     `json:"num"`
+	Load1  string  `json:"load1"`
+	Load5  string  `json:"load5"`
+	Load15 string  `json:"load15"`
 }
 
-var cpupercent uint
+var cpupercent float64
 
 func (c CpuStat) Json() []byte {
 	j, _ := json.Marshal(c)
@@ -36,9 +36,8 @@ func Cpu() *CpuStat {
 
 // RefreshCpu グローバル変数のCPU情報を更新
 func RefreshCpu() {
-	//c, _ := cpu.Percent(1*time.Millisecond, false)
 	c, _ := cpu.Percent(0, false)
-	cpupercent = uint(math.Round(c[0]))
+	cpupercent = math.Round(c[0]*10) / 10
 }
 
 // load avarageをフォーマットして返す
