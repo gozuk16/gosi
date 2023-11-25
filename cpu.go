@@ -36,7 +36,9 @@ func Cpu() *CpuStat {
 
 // RefreshCpu グローバル変数のCPU情報を更新
 func RefreshCpu() {
+	// 0はこの瞬間のCPU使用率
 	c, _ := cpu.Percent(0, false)
+	// 小数点第一位で四捨五入
 	cpupercent = math.Round(c[0]*10) / 10
 }
 
